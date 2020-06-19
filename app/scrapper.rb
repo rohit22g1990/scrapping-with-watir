@@ -3,9 +3,7 @@ class Scrapper
 	def initialize(site_to_crawl)
 		@browser = Watir::Browser.new
 		@site_to_crawl = site_to_crawl
-		browse_website
-		scrap_and_insert_data_in_table
-		close_browser		
+		
 	end 
 	
 	def browse_website
@@ -16,8 +14,9 @@ class Scrapper
 		@browser.div(:class => 'hotelCardListing__descriptionWrapper').wait_until(&:present?)
 	end
 
-	def scrap_and_insert_data_in_table
-		
+	def scrap_data
+		browse_website
+
 		hotels = Array.new
 		@browser.divs(class: 'hotelCardListing__descriptionWrapper').each do |hotel|
 			hotel_hash = Hash.new
@@ -35,7 +34,8 @@ class Scrapper
 		else
 			puts "Oops! Something went wrong"
 		end
-
+		
+		close_browser
 	end
 
 	def close_browser
