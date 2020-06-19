@@ -1,16 +1,23 @@
 class Scrapper
-	def browse_website(site_to_crawl)
-		@browser = Watir::Browser.new
-		@browser.goto site_to_crawl
 
+	def initialize(site_to_crawl)
+		@browser = Watir::Browser.new
+		@site_to_crawl = site_to_crawl
+		browse_website
+		scrap_and_insert_data_in_table
+		close_browser		
+	end 
+	
+	def browse_website
+  	@browser.goto @site_to_crawl
 		@browser.text_field(id: 'autoComplete__home').set 'Pune'
 		@browser.div(class: 'geoSuggestionsList__container').divs.first.click
 		@browser.button(class: 'searchButton--home').click
-
 		@browser.div(:class => 'hotelCardListing__descriptionWrapper').wait_until(&:present?)
 	end
 
-	def prepare_scrap_data
+	def scrap_and_insert_data_in_table
+		
 		hotels = Array.new
 		@browser.divs(class: 'hotelCardListing__descriptionWrapper').each do |hotel|
 			hotel_hash = Hash.new
@@ -23,18 +30,15 @@ class Scrapper
 			hotels << hotel_hash unless hotel_hash.empty?
 		end
 		
-		hotels
-	end
-
-	def scrap_data_of_url(site_to_crawl)
-		browse_website(site_to_crawl)
-		scrap_data = prepare_scrap_data
-		
-		if !scrap_data.empty? && ScrappedData.create(scrap_data)
+		if !hotels.empty? && ScrappedData.create(hotels)
 			puts "Records scrapped successfully"
 		else
 			puts "Oops! Something went wrong"
 		end
+
+	end
+
+	def close_browser
 		@browser.close
-	end 
+	end
 end
