@@ -1,14 +1,14 @@
 class Scrapper
 
-	def initialize(site_to_crawl)
+	def initialize(site_to_crawl, city)
 		@browser = Watir::Browser.new
 		@site_to_crawl = site_to_crawl
-		
+		@city = city
 	end 
 	
 	def browse_website
   	@browser.goto @site_to_crawl
-		@browser.text_field(id: 'autoComplete__home').set 'Pune'
+		@browser.text_field(id: 'autoComplete__home').set @city
 		@browser.div(class: 'geoSuggestionsList__container').divs.first.click
 		@browser.button(class: 'searchButton--home').click
 		@browser.div(:class => 'hotelCardListing__descriptionWrapper').wait_until(&:present?)
@@ -34,7 +34,7 @@ class Scrapper
 		else
 			puts "Oops! Something went wrong"
 		end
-		
+
 		close_browser
 	end
 

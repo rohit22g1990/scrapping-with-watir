@@ -1,6 +1,6 @@
 # app/models/movie.rb
 #
 class ScrappedData < ActiveRecord::Base
-	# validates :title, presence: true, uniqueness: {case_insensitive: true}
-	# validates :director, presence: true
+  # validates :hotel_name, presence: true, uniqueness: {case_insensitive: true}
+  # validates :price, presence: true
 end
